@@ -24,7 +24,6 @@ type
     SpinEdit3: TSpinEdit;
     procedure CheckBox1Click(Sender: TObject);
     procedure ColorBox1Change(Sender: TObject);
-    procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure SpinEdit1Change(Sender: TObject);
     procedure SpinEdit2Change(Sender: TObject);
     procedure SpinEdit3Change(Sender: TObject);
@@ -49,12 +48,6 @@ end;
 procedure TForm1.ColorBox1Change(Sender: TObject);
 begin
   IzgaraPanel1.Renk := ColorBox1.Selected;
-end;
-
-procedure TForm1.FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y:
-    Integer);
-begin
-  Caption := Format('%d-%d', [X,Y]);
 end;
 
 procedure TForm1.SpinEdit1Change(Sender: TObject);
