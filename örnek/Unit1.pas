@@ -22,7 +22,9 @@ type
     SpinEdit2: TSpinEdit;
     Label5: TLabel;
     SpinEdit3: TSpinEdit;
+    CheckBox2: TCheckBox;
     procedure CheckBox1Click(Sender: TObject);
+    procedure CheckBox2Click(Sender: TObject);
     procedure ColorBox1Change(Sender: TObject);
     procedure SpinEdit1Change(Sender: TObject);
     procedure SpinEdit2Change(Sender: TObject);
@@ -43,6 +45,11 @@ implementation
 procedure TForm1.CheckBox1Click(Sender: TObject);
 begin
   IzgaraPanel1.Kenar := CheckBox1.Checked;
+end;
+
+procedure TForm1.CheckBox2Click(Sender: TObject);
+begin
+  IzgaraPanel1.Kosegen := CheckBox2.Checked;
 end;
 
 procedure TForm1.ColorBox1Change(Sender: TObject);

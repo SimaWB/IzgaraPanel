@@ -2,8 +2,8 @@ object Form1: TForm1
   Left = 0
   Top = 0
   Caption = 'Form1'
-  ClientHeight = 253
-  ClientWidth = 469
+  ClientHeight = 196
+  ClientWidth = 448
   Color = 16774636
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,7 +17,7 @@ object Form1: TForm1
     Left = 0
     Top = 0
     Width = 169
-    Height = 253
+    Height = 196
     Margins.Left = 0
     Margins.Top = 0
     Margins.Right = 20
@@ -30,7 +30,7 @@ object Form1: TForm1
     TabOrder = 0
     object Label3: TLabel
       Left = 16
-      Top = 88
+      Top = 104
       Width = 24
       Height = 13
       Caption = 'Renk'
@@ -44,22 +44,22 @@ object Form1: TForm1
     end
     object Label4: TLabel
       Left = 16
-      Top = 120
+      Top = 136
       Width = 22
       Height = 13
       Caption = 'Sat'#305'r'
     end
     object Label5: TLabel
       Left = 16
-      Top = 152
+      Top = 168
       Width = 28
       Height = 13
       Caption = 'S'#252'tun'
     end
     object CheckBox1: TCheckBox
       Left = 16
-      Top = 53
-      Width = 49
+      Top = 48
+      Width = 60
       Height = 17
       Alignment = taLeftJustify
       Caption = 'Kenar'
@@ -69,8 +69,8 @@ object Form1: TForm1
       OnClick = CheckBox1Click
     end
     object ColorBox1: TColorBox
-      Left = 53
-      Top = 84
+      Left = 64
+      Top = 101
       Width = 89
       Height = 22
       Selected = clRed
@@ -78,7 +78,7 @@ object Form1: TForm1
       OnChange = ColorBox1Change
     end
     object SpinEdit1: TSpinEdit
-      Left = 53
+      Left = 64
       Top = 21
       Width = 63
       Height = 22
@@ -89,8 +89,8 @@ object Form1: TForm1
       OnChange = SpinEdit1Change
     end
     object SpinEdit2: TSpinEdit
-      Left = 53
-      Top = 117
+      Left = 64
+      Top = 133
       Width = 63
       Height = 22
       MaxValue = 20
@@ -100,8 +100,8 @@ object Form1: TForm1
       OnChange = SpinEdit2Change
     end
     object SpinEdit3: TSpinEdit
-      Left = 53
-      Top = 149
+      Left = 64
+      Top = 165
       Width = 63
       Height = 22
       MaxValue = 20
@@ -110,30 +110,43 @@ object Form1: TForm1
       Value = 2
       OnChange = SpinEdit3Change
     end
+    object CheckBox2: TCheckBox
+      Left = 16
+      Top = 72
+      Width = 60
+      Height = 17
+      Alignment = taLeftJustify
+      Caption = 'K'#246#351'egen'
+      Checked = True
+      State = cbChecked
+      TabOrder = 5
+      OnClick = CheckBox2Click
+    end
   end
   object IzgaraPanel1: TIzgaraPanel
     Left = 169
     Top = 0
-    Width = 300
-    Height = 253
+    Width = 279
+    Height = 196
+    Align = alClient
     object Label1: TLabel
-      Left = 48
-      Top = 200
+      Left = 136
+      Top = 142
       Width = 31
       Height = 13
       Caption = 'Label1'
     end
     object Button2: TButton
-      Left = 48
-      Top = 21
+      Left = 24
+      Top = 13
       Width = 161
       Height = 49
       Caption = 'Button2'
       TabOrder = 2
     end
     object Edit2: TEdit
-      Left = 48
-      Top = 128
+      Left = 24
+      Top = 93
       Width = 185
       Height = 21
       TabOrder = 3

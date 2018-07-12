@@ -21,6 +21,23 @@ type
     property CizgiTipi: TCizgiType read FCizgiTipi write FCizgiTipi;
   end;
 
+  TKenar = class(TCustomControl)
+  private
+    FParent: TIzgaraPanel;
+    procedure RecreateHRGN; virtual;
+    procedure Paint; override;
+  protected
+    procedure CreateWnd; override;
+    procedure Resize; override;
+  public
+    constructor Create(AOwner: TIzgaraPanel); reintroduce;
+  end;
+
+  TKosegen = class(TKenar)
+  private
+    procedure RecreateHRGN; override;
+  end;
+
   TIzgaraPanel = class(TCustomPanel)
   private
     FSutunSayisi: Integer;
@@ -30,7 +47,9 @@ type
 
     FCizgiList: TList;
     FKenar: Boolean;
-    FSol, FSag, FUst, FAlt: TCizgi;
+    FKenarlar: TKenar;
+    FKosegenler: TKosegen;
+    FKosegen: Boolean;
     procedure CizgiListesiniYenile(ct: TCizgiType);
 
     procedure SetRenk(const Value: TColor);
@@ -38,6 +57,7 @@ type
     procedure SetSutunSayisi(const Value: Integer);
     procedure SetKalinlik(const Value: Integer);
     procedure SetKenar(const Value: Boolean);
+    procedure SetKosegen(const Value: Boolean);
   protected
     procedure Paint; override;
   public
@@ -50,6 +70,7 @@ type
     property SatirSayisi: Integer read FSatirSayisi write SetSatirSayisi default 2;
     property Kalinlik: Integer read FKalinlik write SetKalinlik default 1;
     property Kenar: Boolean read FKenar write SetKenar default True;
+    property Kosegen: Boolean read FKosegen write SetKosegen default True;
   end;
 
 procedure Register;
@@ -67,9 +88,9 @@ constructor TCizgi.Create(AOwner: TIzgaraPanel; CizgiTipi: TCizgiType);
 begin
   inherited Create(AOwner);
   Parent := AOwner;
-  Enabled := False;
   FParent := AOwner;
   FCizgiTipi := CizgiTipi;
+  Enabled := False;
 end;
 
 procedure TCizgi.Paint;
@@ -133,11 +154,10 @@ begin
   FSatirSayisi := 2;
   FKalinlik := 1;
   FKenar := True;
+  FKosegen := True;
 
-  FSol := TCizgi.Create(Self, ctDikey);
-  FSag := TCizgi.Create(Self, ctDikey);
-  FUst := TCizgi.Create(Self, ctYatay);
-  FAlt := TCizgi.Create(Self, ctYatay);
+  FKenarlar := TKenar.Create(Self);
+  FKosegenler := TKosegen.Create(Self);
 
   FCizgiList := TList.Create;
   CizgiListesiniYenile(ctDikey);
@@ -188,19 +208,11 @@ begin
     end;
   end;
 
-  if not FKenar then
-  begin
-    FSol.Width := 0;
-    FSag.Width := 0;
-    FUst.Height := 0;
-    FAlt.Height := 0;
-  end else
-  begin
-    FSol.UpdatePosition(0);
-    FSag.UpdatePosition(Width - FKalinlik);
-    FUst.UpdatePosition(0);
-    FAlt.UpdatePosition(Height - FKalinlik);
-  end;
+  FKenarlar.Invalidate;
+  FKenarlar.BringToFront;
+
+  FKosegenler.Invalidate;
+  FKosegenler.BringToFront;
 end;
 
 procedure TIzgaraPanel.SetKalinlik(const Value: Integer);
@@ -220,6 +232,15 @@ begin
   if FKenar <> Value then
   begin
     FKenar := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TIzgaraPanel.SetKosegen(const Value: Boolean);
+begin
+  if FKosegen <> Value then
+  begin
+    FKosegen := Value;
     Invalidate;
   end;
 end;
@@ -255,6 +276,92 @@ begin
       FSutunSayisi := 0;
     CizgiListesiniYenile(ctDikey);
   end;
+end;
+
+{ TKenar }
+
+constructor TKenar.Create(AOwner: TIzgaraPanel);
+begin
+  inherited Create(AOwner);
+  FParent := AOwner;
+  Parent := TWinControl(AOwner);
+  ParentBackground := False;
+  ParentColor := False;
+  Align := alClient;
+  Enabled := False;
+  Color := FParent.Renk;
+end;
+
+procedure TKenar.CreateWnd;
+begin
+  inherited;
+  RecreateHRGN;
+end;
+
+procedure TKenar.Paint;
+begin
+  inherited;
+  RecreateHRGN;
+end;
+
+procedure TKenar.RecreateHRGN;
+var
+  L1, L2, L3, L4, LCombine: HRGN;
+begin
+  Color := FParent.Renk;
+  LCombine := CreateRectRgn(0, 0, 0, 0);
+  if FParent.Kenar then
+  begin
+    L1 := CreateRectRgn(0, 0, Width, FParent.Kalinlik);
+    L2 := CreateRectRgn(0, 0, FParent.Kalinlik, Height);
+    L3 := CreateRectRgn(Width, Height, Width-FParent.Kalinlik, 0);
+    L4 := CreateRectRgn(Width, Height, 0, Height-FParent.Kalinlik);
+    CombineRgn(LCombine, L1, L2, RGN_OR);
+    CombineRgn(LCombine, LCombine, L3, RGN_OR);
+    CombineRgn(LCombine, LCombine, L4, RGN_OR);
+  end;
+  SetWindowRgn(Handle, LCombine, True);
+end;
+
+procedure TKenar.Resize;
+begin
+  inherited;
+  RecreateHRGN;
+end;
+
+{ TKosegen }
+
+procedure TKosegen.RecreateHRGN;
+var
+  Kose1, Kose2, Koseler: HRGN;
+  FPoints1, FPoints2: array[0..5] of TPoint;
+  W: Integer;
+begin
+  Color := FParent.Renk;
+  Koseler := CreateRectRgn(0, 0, 0, 0);
+  if FParent.Kosegen then
+  begin
+    W := Round(Sqrt(((FParent.Kalinlik * FParent.Kalinlik) / 2)));
+
+    FPoints1[0] := Point(0, 0);
+    FPoints1[1] := Point(0, W);
+    FPoints1[2] := Point(Width-W, Height);
+    FPoints1[3] := Point(Width, Height);
+    FPoints1[4] := Point(Width, Height-W);
+    FPoints1[5] := Point(W, 0);
+    Kose1 := CreatePolygonRgn(FPoints1, 6, WINDING);
+
+    FPoints2[0] := Point(Width, 0);
+    FPoints2[1] := Point(Width-W, 0);
+    FPoints2[2] := Point(0, Height-W);
+    FPoints2[3] := Point(0, Height);
+    FPoints2[4] := Point(W, Height);
+    FPoints2[5] := Point(Width, W);
+    Kose2 := CreatePolygonRgn(FPoints2, 6, WINDING);
+
+    CombineRgn(Koseler, Kose1, Kose2, RGN_OR);
+  end;
+  SetWindowRgn(Handle, Koseler, True);
 end;
 
 end.
